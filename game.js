@@ -432,11 +432,7 @@ function loseLife() {
   if (state.scene !== "playing") return;
   state.lives -= 1;
   state.flash = 0.35;
-  if (state.lives < 0) {
-    state.scene = "gameover";
-    return;
-  }
-  if (state.lives === 0) {
+  if (state.lives <= 0) {
     state.scene = "gameover";
     return;
   }
@@ -622,16 +618,6 @@ function updateFactory(level, dt) {
     }
     return true;
   });
-}
-
-function updateRivets(level, dt) {
-  level.spawnTimers.fire -= dt;
-  if (level.spawnTimers.fire <= 0) {
-    level.spawnTimers.fire = Math.max(2.8, 4.2 - level.difficulty * 0.15);
-    const spawnX = Math.random() > 0.5 ? 120 : 840;
-    level.hazards.push(makeFireball(level, spawnX, 3, level.difficulty));
-  }
-  updateFireballs(level, dt);
 }
 
 function updateMovers(level, player, dt) {
