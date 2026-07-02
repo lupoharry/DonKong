@@ -297,6 +297,7 @@ function buildElevatorStage(difficulty) {
     makeLadder(230, 505, 675),
     makeLadder(730, 320, 500),
     makeLadder(230, 135, 315),
+    makeLadder(730, 135, 315),
   ];
   return {
     name: "Elevators",
@@ -529,7 +530,7 @@ function updateFireballs(level, dt) {
   if (level.spawnTimers.fire <= 0) {
     level.spawnTimers.fire = Math.max(2.4, 4.4 - level.difficulty * 0.22);
     const platformIndex = level.name === "Rivets" ? 3 : level.name === "Factory" ? 3 : 5;
-    const startX = level.name === "Factory" ? 790 : 130;
+    const startX = level.name === "Factory" ? 790 : level.name === "Elevators" ? 550 : 130;
     level.hazards.push(makeFireball(level, startX, platformIndex, level.difficulty));
   }
 
