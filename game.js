@@ -122,6 +122,8 @@ function makePlayer(x, y) {
 function makeBarrel(level, difficulty) {
   const startPlatform = level.platforms[0];
   const x = 146;
+  const slope = startPlatform.x2 - startPlatform.x1;
+  const downhillDir = slope === 0 ? 1 : Math.sign(slope);
   return {
     kind: "barrel",
     x,
@@ -129,7 +131,7 @@ function makeBarrel(level, difficulty) {
     w: 22,
     h: 22,
     platformIndex: 0,
-    dir: 1,
+    dir: downhillDir,
     speed: 95 + difficulty * 12,
     dropSpeed: 180 + difficulty * 15,
     dropping: false,
@@ -274,7 +276,7 @@ function buildBarrelStage(difficulty) {
     ],
     rivets: [],
     goal: { x: 795, y: 74, w: 60, h: 60 },
-    playerStart: { x: 120, y: 610 },
+    playerStart: { x: 120, y: 646 },
     dk: { x: 110, y: 70 },
     pauline: { x: 820, y: 72 },
     hazards: [],
@@ -493,6 +495,7 @@ function updateBarrels(level, dt) {
 
     const platform = level.platforms[hazard.platformIndex];
     const slopeDir = Math.sign(platform.x2 - platform.x1) || 1;
+    hazard.dir = slopeDir;
     hazard.x += hazard.dir * hazard.speed * dt;
     const top = platformYAt(platform, hazard.x);
     if (top === null) {
@@ -501,8 +504,8 @@ function updateBarrels(level, dt) {
         return false;
       }
       hazard.platformIndex = nextIndex;
-      hazard.dir *= -1;
       const nextPlatform = level.platforms[hazard.platformIndex];
+      hazard.dir = Math.sign(nextPlatform.x2 - nextPlatform.x1) || hazard.dir;
       hazard.x = hazard.dir > 0 ? Math.min(nextPlatform.x1, nextPlatform.x2) + 12 : Math.max(nextPlatform.x1, nextPlatform.x2) - 12;
       hazard.y = platformYAt(nextPlatform, hazard.x) - hazard.h;
       return true;
